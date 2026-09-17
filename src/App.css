@@ -67,6 +67,7 @@ button {
 
   border: 1px solid #8d3cff;
   border-radius: 25px;
+    text-decoration: none;
 
   background: transparent;
   color: white;
@@ -137,6 +138,7 @@ button {
 
   border: none;
   border-radius: 30px;
+   text-decoration: none;
 
   background: #8d3cff;
   color: white;
@@ -159,6 +161,8 @@ button {
 
   border: 1px solid #38333f;
   border-radius: 30px;
+     text-decoration: none;
+
 
   background: transparent;
   color: white;
