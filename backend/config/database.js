@@ -1,18 +1,19 @@
 import mongoose from "mongoose";
+import { DB_NAME } from "../constants.js";
 
-const connectDatabase = async () => {
-    const { MONGODB_URI } = process.env;
-
-    if (!MONGODB_URI) {
-        throw new Error("MONGODB_URI is missing from the environment");
-    }
-
-    await mongoose.connect(MONGODB_URI, {
-        dbName: process.env.MONGODB_DB_NAME || "eventify",
-        serverSelectionTimeoutMS: 5000,
-    });
-
-    console.log("MongoDB Atlas connected");
+//create function for connecting to mongo database
+const connectDB = async () => {
+  try {
+    const connectionInstance = await mongoose.connect(
+      `${process.env.MONGODB_URI}/${DB_NAME}`,
+    );
+    console.log(
+      `MONGODB connected !! DB HOST : ${connectionInstance.connection.host}`,
+    );
+  } catch (error) {
+    console.log("MONGODB connection error", error);
+    process.exit(1);
+  }
 };
 
-export default connectDatabase;
+export default connectDB;
