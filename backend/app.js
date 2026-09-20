@@ -2,6 +2,7 @@ import cors from "cors";
 import express from "express";
 import ApiError from "./utils/ApiError.js";
 import errorHandler from "./middleware/errorHandler.js";
+import authRoutes from "./routes/authRoutes.js";
 
 const app = express();
 
@@ -18,6 +19,9 @@ app.get("/api/health", (_req, res) => {
         message: "Eventify API is running",
     });
 });
+
+// Mount the auth routes example http://localhost:5000/api/auth/signup
+app.use("/api/auth", authRoutes);
 
 app.use((_req, _res, next) => {
     next(new ApiError(404, "Route not found"));
