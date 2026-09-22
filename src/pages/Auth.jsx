@@ -1,14 +1,64 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
 
 function Auth() {
+    const navigate = useNavigate();
     const [role, setRole] = useState("customer");
     const [isLogin, setIsLogin] = useState(true);
+    const [form, setForm] = useState({ name: "", email: "", password: "" });
+    const [status, setStatus] = useState({ type: "", message: "" });
+    const [isSubmitting, setIsSubmitting] = useState(false);
+
+    const updateField = (event) => {
+        const { name, value } = event.target;
+        setForm((currentForm) => ({ ...currentForm, [name]: value }));
+    };
+
+    const submitForm = async (event) => {
+        event.preventDefault();
+        setStatus({ type: "", message: "" });
+        setIsSubmitting(true);
+
+        try {
+            const endpoint = isLogin ? "/api/auth/login" : "/api/auth/signup";
+            const response = await fetch(`${API_URL}${endpoint}`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    name: form.name,
+                    email: form.email,
+                    password: form.password,
+                }),
+            });
+            const result = await response.json();
+
+            if (!response.ok) {
+                throw new Error(result.message || "Unable to complete authentication");
+            }
+
+            localStorage.setItem("eventifyToken", result.data.token);
+            localStorage.setItem("eventifyUser", JSON.stringify(result.data.user));
+            navigate("/");
+        } catch (error) {
+            setStatus({ type: "error", message: error.message });
+        } finally {
+            setIsSubmitting(false);
+        }
+    };
+
+    const switchMode = () => {
+        setIsLogin((currentValue) => !currentValue);
+        setRole("customer");
+        setForm({ name: "", email: "", password: "" });
+        setStatus({ type: "", message: "" });
+    };
 
     return (
         <div className="min-h-screen bg-[#09070d] text-white flex items-center justify-center px-5 py-10">
 
-            <div className="w-full max-w-[550px]">
+            <div className="w-full max-w-137.5">
 
                 {/* LOGO / BRAND */}
                 <div className="text-center mb-8">
@@ -31,7 +81,7 @@ function Auth() {
                 <div className="w-full bg-[#111016] border border-[#292230] rounded-[22px] p-7 sm:p-9 shadow-[0_25px_70px_rgba(0,0,0,0.4)]">
 
                     {/* ROLE TABS */}
-                    <div className="grid grid-cols-2 bg-[#0b0910] border border-[#24202b] rounded-[12px] p-1 mb-7">
+                    <div className="grid grid-cols-2 bg-[#0b0910] border border-[#24202b] rounded-xl p-1 mb-7">
 
                         <button
                             type="button"
@@ -48,6 +98,7 @@ function Auth() {
                         <button
                             type="button"
                             onClick={() => setRole("admin")}
+                            disabled={!isLogin}
                             className={`py-3 rounded-[9px] text-sm font-semibold transition-all duration-300 ${
                                 role === "admin"
                                     ? "bg-[#7c3aed] text-white"
@@ -76,7 +127,7 @@ function Auth() {
 
                     {/* FORM */}
                     <form
-                        onSubmit={(e) => e.preventDefault()}
+                        onSubmit={submitForm}
                         className="space-y-5"
                     >
 
@@ -88,8 +139,12 @@ function Auth() {
                                 </label>
 
                                 <input
+                                    name="name"
                                     type="text"
                                     placeholder="Enter your name"
+                                    value={form.name}
+                                    onChange={updateField}
+                                    required
                                     className="w-full px-4 py-3 rounded-[10px] bg-[#0b0910] border border-[#292230] text-white placeholder-[#666] outline-none transition-all duration-300 focus:border-[#7c3aed] focus:ring-1 focus:ring-[#7c3aed]"
                                 />
                             </div>
@@ -103,8 +158,12 @@ function Auth() {
                             </label>
 
                             <input
+                                name="email"
                                 type="email"
                                 placeholder="Enter your email"
+                                value={form.email}
+                                onChange={updateField}
+                                required
                                 className="w-full px-4 py-3 rounded-[10px] bg-[#0b0910] border border-[#292230] text-white placeholder-[#666] outline-none transition-all duration-300 focus:border-[#7c3aed] focus:ring-1 focus:ring-[#7c3aed]"
                             />
                         </div>
@@ -117,8 +176,13 @@ function Auth() {
                             </label>
 
                             <input
+                                name="password"
                                 type="password"
                                 placeholder="Enter your password"
+                                value={form.password}
+                                onChange={updateField}
+                                minLength={8}
+                                required
                                 className="w-full px-4 py-3 rounded-[10px] bg-[#0b0910] border border-[#292230] text-white placeholder-[#666] outline-none transition-all duration-300 focus:border-[#7c3aed] focus:ring-1 focus:ring-[#7c3aed]"
                             />
                         </div>
@@ -127,12 +191,21 @@ function Auth() {
                         {/* SUBMIT */}
                         <button
                             type="submit"
+                            disabled={isSubmitting}
                             className="w-full py-3.5 rounded-[10px] bg-[#7c3aed] text-white font-semibold transition-all duration-300 hover:bg-[#8b5cf6] hover:-translate-y-0.5"
                         >
-                            {isLogin
+                            {isSubmitting
+                                ? "Please wait..."
+                                : isLogin
                                 ? `Login as ${role === "customer" ? "Customer" : "Admin"}`
                                 : `Sign Up as ${role === "customer" ? "Customer" : "Admin"}`}
                         </button>
+
+                        {status.message && (
+                            <p className={`text-sm ${status.type === "error" ? "text-red-400" : "text-green-400"}`}>
+                                {status.message}
+                            </p>
+                        )}
 
                     </form>
 
@@ -145,7 +218,7 @@ function Auth() {
                                 Don't have an account?{" "}
                                 <button
                                     type="button"
-                                    onClick={() => setIsLogin(false)}
+                                    onClick={switchMode}
                                     className="text-[#a855f7] font-semibold hover:text-[#c084fc]"
                                 >
                                     Sign Up
@@ -156,7 +229,7 @@ function Auth() {
                                 Already have an account?{" "}
                                 <button
                                     type="button"
-                                    onClick={() => setIsLogin(true)}
+                                    onClick={switchMode}
                                     className="text-[#a855f7] font-semibold hover:text-[#c084fc]"
                                 >
                                     Login
