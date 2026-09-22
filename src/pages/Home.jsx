@@ -11,8 +11,12 @@ import birthday2 from "../assets/birthday2.jpg";
 import eng2 from "../assets/eng2.jpg";
 import house2 from "../assets/house2.jpg";
 
+import hero1 from "../assets/hero1.jpg";
+import hero3 from "../assets/hero3.jpg";
+import hero5 from "../assets/hero5.jpg";
+
 function Home() {
-  const heroImages = [wedding2, birthday, eng2, house2];
+  const heroImages = [wedding2, birthday, eng2, house2, hero1, hero3, hero5];
   const [currentSlide, setCurrentSlide] = useState(0);
 
   useEffect(() => {
@@ -180,35 +184,6 @@ function Home() {
           </p>
         </div>
 
-        {/* <div className="grid grid-cols-1 gap-[18px] sm:grid-cols-2 lg:grid-cols-4">
-          {[
-            [wedding, "01", "Wedding", "/events/wedding"],
-            [birthday2, "02", "Birthday", "/events/birthday"],
-            [eng, "03", "Engagement", "/events/engagement"],
-            [house, "04", "Housewarming", "/events/housewarming"],
-          ].map(([image, number, title, link]) => (
-            <div
-              key={title}
-              className="group relative h-[380px] overflow-hidden rounded-[20px] transition duration-500 hover:-translate-y-2"
-            >
-              <img
-                src={image}
-                alt={`${title} event`}
-                className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
-              />
-
-              <div className="absolute inset-0 flex flex-col justify-end bg-gradient-to-t from-black/80 to-transparent p-[25px] text-white">
-                <p className="text-xs text-[#c084fc]">{number}</p>
-
-                <h3 className="my-[5px] text-[28px]">{title}</h3>
-
-                <Link to={link} className="text-[13px] text-white no-underline">
-                  Explore →
-                </Link>
-              </div>
-            </div>
-          ))}
-        </div> */}
         <div className="grid grid-cols-1 gap-[18px] sm:grid-cols-2 lg:grid-cols-4">
   {[
     [wedding, "01", "Wedding", "/events/wedding"],
