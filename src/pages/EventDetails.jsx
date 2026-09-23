@@ -1,7 +1,7 @@
 import { Link, useParams } from "react-router-dom";
 
 import wedding from "../assets/wedding-eve.jpg";
-import birthday from "../assets/birthday.jpg";
+import birthday from "../assets/birthday-eve.jpg";
 import eng from "../assets/engagement-eve.jpg";
 import house from "../assets/house-eve.jpg";
 
@@ -13,6 +13,7 @@ function EventDetails() {
             title: "Wedding",
             icon: "💜",
             image: wedding,
+            position: "center 55%",
             description:
                 "Turn your special day into an unforgettable celebration filled with love, elegance and beautiful memories.",
         },
@@ -21,6 +22,7 @@ function EventDetails() {
             title: "Birthday",
             icon: "🎂",
             image: birthday,
+            position: "center 33%",
             description:
                 "Create a fun and memorable birthday celebration designed around your personality and your people.",
         },
@@ -29,6 +31,7 @@ function EventDetails() {
             title: "Engagement",
             icon: "💍",
             image: eng,
+            position: "center 67%",
             description:
                 "Celebrate the beginning of a beautiful journey with a perfectly planned engagement experience.",
         },
@@ -37,6 +40,7 @@ function EventDetails() {
             title: "Housewarming",
             icon: "🏠",
             image: house,
+            position: "center 55%",
             description:
                 "Welcome a new chapter of your life with a warm, beautiful and memorable housewarming celebration.",
         },
@@ -77,8 +81,9 @@ function EventDetails() {
                 <img
                     src={event.image}
                     alt={event.title}
-                    className="w-full h-full object-cover object-[center_67%]"
-
+                    // className="w-full h-full object-cover object-[center_67%]"
+className="w-full h-full object-cover"
+style={{ objectPosition: event.position }}
                 />
 
                 {/* DARK OVERLAY */}
