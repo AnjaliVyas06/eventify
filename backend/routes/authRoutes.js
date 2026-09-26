@@ -7,8 +7,6 @@ import {
 
 import verifyJWT from "../middleware/authMiddleware.js";
 
-
-
 const router = Router();
 
 router.post("/signup", registerUser);
