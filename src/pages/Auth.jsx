@@ -7,7 +7,12 @@ function Auth() {
     const navigate = useNavigate();
     const [role, setRole] = useState("customer");
     const [isLogin, setIsLogin] = useState(true);
-    const [form, setForm] = useState({ name: "", email: "", password: "" });
+    const [form, setForm] = useState({
+        name: "",
+        email: "",
+        password: "",
+        signupKey: "",
+    });
     const [status, setStatus] = useState({ type: "", message: "" });
     const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -22,7 +27,9 @@ function Auth() {
         setIsSubmitting(true);
 
         try {
-            const endpoint = isLogin ? "/api/auth/login" : "/api/auth/signup";
+            const endpoint = role === "admin"
+                ? `/api/admin/auth/${isLogin ? "login" : "signup"}`
+                : `/api/auth/${isLogin ? "login" : "signup"}`;
             const response = await fetch(`${API_URL}${endpoint}`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
@@ -30,6 +37,9 @@ function Auth() {
                     name: form.name,
                     email: form.email,
                     password: form.password,
+                    ...(role === "admin" && !isLogin
+                        ? { signupKey: form.signupKey }
+                        : {}),
                 }),
             });
             const result = await response.json();
@@ -51,7 +61,7 @@ function Auth() {
     const switchMode = () => {
         setIsLogin((currentValue) => !currentValue);
         setRole("customer");
-        setForm({ name: "", email: "", password: "" });
+        setForm({ name: "", email: "", password: "", signupKey: "" });
         setStatus({ type: "", message: "" });
     };
 
@@ -98,7 +108,6 @@ function Auth() {
                         <button
                             type="button"
                             onClick={() => setRole("admin")}
-                            disabled={!isLogin}
                             className={`py-3 rounded-[9px] text-sm font-semibold transition-all duration-300 ${
                                 role === "admin"
                                     ? "bg-[#7c3aed] text-white"
@@ -143,6 +152,24 @@ function Auth() {
                                     type="text"
                                     placeholder="Enter your name"
                                     value={form.name}
+                                    onChange={updateField}
+                                    required
+                                    className="w-full px-4 py-3 rounded-[10px] bg-[#0b0910] border border-[#292230] text-white placeholder-[#666] outline-none transition-all duration-300 focus:border-[#7c3aed] focus:ring-1 focus:ring-[#7c3aed]"
+                                />
+                            </div>
+                        )}
+
+                        {!isLogin && role === "admin" && (
+                            <div>
+                                <label className="block text-sm font-medium text-[#ddd] mb-2">
+                                    Admin Signup Key
+                                </label>
+
+                                <input
+                                    name="signupKey"
+                                    type="password"
+                                    placeholder="Enter the admin signup key"
+                                    value={form.signupKey}
                                     onChange={updateField}
                                     required
                                     className="w-full px-4 py-3 rounded-[10px] bg-[#0b0910] border border-[#292230] text-white placeholder-[#666] outline-none transition-all duration-300 focus:border-[#7c3aed] focus:ring-1 focus:ring-[#7c3aed]"
