@@ -38,4 +38,14 @@ const verifyJWT = asyncHandler(async (req, _res, next) => {
     }
 });
 
+const requireRole = (requiredRole) =>
+    (req, _res, next) => {
+        if (req.user?.role !== requiredRole) {
+            throw new ApiError(403, "You do not have permission to access this resource");
+        }
+
+        next();
+    };
+
+export { requireRole };
 export default verifyJWT;
