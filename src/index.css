@@ -1,4 +1,4 @@
-@import "tailwindcss";
+/* @import "tailwindcss";
 
 * {
   box-sizing: border-box;
@@ -13,4 +13,150 @@ body {
   font-family: Arial, sans-serif;
   background: #08060d;
   color: white;
+  font-size: 16px;
+  line-height: 1.6;
+} */
+ @import "tailwindcss";
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #08060d;
+  color: white;
+  font-size: 20px;
+  line-height: 1.7;
+}
+
+/* =========================================
+   PRESENTATION SIZE — ALL NORMAL CONTENT
+   ========================================= */
+
+p {
+  font-size: 20px !important;
+  line-height: 1.75 !important;
+}
+
+a {
+  font-size: 19px !important;
+}
+
+button {
+  font-size: 19px !important;
+}
+
+label {
+  font-size: 19px !important;
+}
+
+input,
+textarea,
+select {
+  font-size: 19px !important;
+}
+
+/* =========================================
+   TAILWIND SMALL TEXT → BIGGER
+   ========================================= */
+
+.text-xs {
+  font-size: 18px !important;
+  line-height: 1.6 !important;
+}
+
+.text-sm {
+  font-size: 19px !important;
+  line-height: 1.65 !important;
+}
+
+.text-base {
+  font-size: 20px !important;
+  line-height: 1.7 !important;
+}
+
+.text-lg {
+  font-size: 23px !important;
+}
+
+.text-xl {
+  font-size: 26px !important;
+}
+
+.text-2xl {
+  font-size: 30px !important;
+}
+
+.text-3xl {
+  font-size: 38px !important;
+}
+
+/* =========================================
+   SMALL EXPLICIT TAILWIND SIZES
+   ========================================= */
+
+[class*="text-[11px]"] {
+  font-size: 18px !important;
+}
+
+[class*="text-[12px]"] {
+  font-size: 18px !important;
+}
+
+[class*="text-[13px]"] {
+  font-size: 18px !important;
+}
+
+[class*="text-[14px]"] {
+  font-size: 19px !important;
+}
+
+[class*="text-[15px]"] {
+  font-size: 19px !important;
+}
+
+[class*="text-[16px]"] {
+  font-size: 20px !important;
+}
+
+[class*="text-[17px]"] {
+  font-size: 20px !important;
+}
+
+/* =========================================
+   NAVBAR — CLEAR FROM DISTANCE
+   ========================================= */
+
+nav a {
+  font-size: 20px !important;
+}
+
+/* =========================================
+   BUTTONS
+   ========================================= */
+
+button {
+  font-size: 19px !important;
+}
+
+/* =========================================
+   HEADINGS — KEEP THEIR VISUAL HIERARCHY
+   ========================================= */
+
+h1 {
+  line-height: 1.1;
+}
+
+h2 {
+  line-height: 1.2;
+}
+
+h3 {
+  line-height: 1.3;
 }

@@ -38,25 +38,25 @@ function Home() {
 
         <nav className="hidden md:flex gap-[35px]">
           <Link
-            className="text-sm text-[#c8c4ce] hover:text-white transition"
+            className="text-[22px] text-[#c8c4ce] hover:text-white transition"
             to="/"
           >
             Home
           </Link>
           <Link
-            className="text-sm text-[#c8c4ce] hover:text-white transition"
+            className="text-[22px] text-[#c8c4ce] hover:text-white transition"
             to="/about"
           >
             About
           </Link>
           <Link
-            className="text-sm text-[#c8c4ce] hover:text-white transition"
+            className="text-[22px] text-[#c8c4ce] hover:text-white transition"
             to="/services"
           >
             Services
           </Link>
           <Link
-            className="text-sm text-[#c8c4ce] hover:text-white transition"
+            className="text-[22px] text-[#c8c4ce] hover:text-white transition"
             to="/events"
           >
             Events
@@ -371,7 +371,7 @@ function Home() {
           >
             Events
           </Link>
-        </div>
+        </div> 
 
         <p className="text-[11px] text-[#55505a]">
           © 2026 Eventify. All rights reserved.
