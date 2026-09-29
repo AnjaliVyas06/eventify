@@ -24,8 +24,37 @@ function Home() {
       setCurrentSlide((prev) => (prev + 1) % heroImages.length);
     }, 4000);
 
+
     return () => clearInterval(interval);
   }, [heroImages.length]);
+
+  const profile = (() => {
+    try {
+      const token = localStorage.getItem("eventifyToken");
+      const storedUser = localStorage.getItem("eventifyUser");
+
+      if (!token || !storedUser) return null;
+
+      const user = JSON.parse(storedUser);
+      const routes = {
+        customer: "/customer-profile",
+        admin: "/admin-profile",
+      };
+      const route = user && typeof user === "object" ? routes[user.role] : null;
+
+      if (!route) return null;
+
+      const name = typeof user.name === "string" ? user.name.trim() : "";
+
+      return {
+        route,
+        initial: name ? name.charAt(0).toUpperCase() : "U",
+        label: user.role === "admin" ? "Admin profile" : "Customer profile",
+      };
+    } catch {
+      return null;
+    }
+  })();
 
   return (
     <div className="min-h-screen bg-[#08060d] text-white">
@@ -70,12 +99,23 @@ function Home() {
           Book an Event
         </Link> */}
         <div className="flex items-center">
-          <Link
-            to="/auth"
-            className="rounded-[10px] border border-[#7c3aed] px-4 py-2 text-sm font-semibold text-white transition-all duration-300 hover:bg-[#7c3aed]"
-          >
-            Login / Sign Up
-          </Link>
+          {profile ? (
+            <Link
+              to={profile.route}
+              aria-label={`Go to ${profile.label.toLowerCase()}`}
+              title={profile.label}
+              className="flex h-11 w-11 items-center justify-center rounded-full border border-[#7c3aed] bg-[#7c3aed] text-lg font-bold text-white transition-all duration-300 hover:bg-[#8b5cf6]"
+            >
+              {profile.initial}
+            </Link>
+          ) : (
+            <Link
+              to="/auth"
+              className="rounded-[10px] border border-[#7c3aed] px-4 py-2 text-sm font-semibold text-white transition-all duration-300 hover:bg-[#7c3aed]"
+            >
+              Login / Sign Up
+            </Link>
+          )}
         </div>
       </header>
 

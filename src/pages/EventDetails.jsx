@@ -17,7 +17,6 @@ function EventDetails() {
             description:
                 "Turn your special day into an unforgettable celebration filled with love, elegance and beautiful memories.",
         },
-
         birthday: {
             title: "Birthday",
             icon: "🎂",
@@ -26,7 +25,6 @@ function EventDetails() {
             description:
                 "Create a fun and memorable birthday celebration designed around your personality and your people.",
         },
-
         engagement: {
             title: "Engagement",
             icon: "💍",
@@ -35,7 +33,6 @@ function EventDetails() {
             description:
                 "Celebrate the beginning of a beautiful journey with a perfectly planned engagement experience.",
         },
-
         housewarming: {
             title: "Housewarming",
             icon: "🏠",
@@ -48,7 +45,6 @@ function EventDetails() {
 
     const event = events[eventId];
 
-    // If someone enters an invalid event URL
     if (!event) {
         return (
             <div className="min-h-screen bg-[#09070d] text-white flex items-center justify-center px-5">
@@ -75,22 +71,20 @@ function EventDetails() {
     return (
         <div className="min-h-screen bg-[#09070d] text-white">
 
-            {/* HERO IMAGE */}
+            {/* HERO */}
             <section className="relative h-[480px] overflow-hidden">
 
                 <img
                     src={event.image}
                     alt={event.title}
-                    // className="w-full h-full object-cover object-[center_67%]"
-className="w-full h-full object-cover"
-style={{ objectPosition: event.position }}
+                    className="w-full h-full object-cover"
+                    style={{ objectPosition: event.position }}
                 />
 
-                {/* DARK OVERLAY */}
                 <div className="absolute inset-0 bg-gradient-to-t from-[#09070d] via-black/50 to-black/20" />
 
-                {/* HERO CONTENT */}
                 <div className="absolute inset-0 flex items-end">
+
                     <div className="max-w-[1200px] w-full mx-auto px-6 pb-14">
 
                         <Link
@@ -101,6 +95,7 @@ style={{ objectPosition: event.position }}
                         </Link>
 
                         <div className="flex items-center gap-4 mb-4">
+
                             <div className="w-14 h-14 flex items-center justify-center rounded-[15px] bg-black/60 backdrop-blur-md border border-white/10 text-2xl">
                                 {event.icon}
                             </div>
@@ -108,6 +103,7 @@ style={{ objectPosition: event.position }}
                             <p className="text-[#c084fc] text-sm font-semibold tracking-[2px]">
                                 EVENTIFY EXPERIENCE
                             </p>
+
                         </div>
 
                         <h1 className="text-[48px] md:text-[68px] font-bold leading-none">
@@ -119,7 +115,7 @@ style={{ objectPosition: event.position }}
             </section>
 
 
-            {/* EVENT INTRO */}
+            {/* INTRO */}
             <section className="max-w-[1200px] mx-auto px-6 py-16">
 
                 <div className="max-w-[800px]">
@@ -142,8 +138,12 @@ style={{ objectPosition: event.position }}
                 {/* PLANNING OPTIONS */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mt-12">
 
+
                     {/* CUSTOMIZE */}
-                    <div className="group p-7 rounded-[18px] border border-[#292230] bg-[#111016] transition-all duration-300 hover:-translate-y-1 hover:border-[#8b5cf6]">
+                    <Link
+                        to={`/events/${eventId}/customize`}
+                        className="group p-7 rounded-[18px] border border-[#292230] bg-[#111016] transition-all duration-300 hover:-translate-y-1 hover:border-[#8b5cf6] no-underline text-white"
+                    >
 
                         <div className="w-12 h-12 flex items-center justify-center rounded-[12px] bg-[#7c3aed]/15 text-2xl mb-5">
                             🎨
@@ -158,11 +158,18 @@ style={{ objectPosition: event.position }}
                             details to create an event that feels like you.
                         </p>
 
-                    </div>
+                        <div className="mt-5 text-[#c084fc] font-semibold">
+                            Start Customizing →
+                        </div>
+
+                    </Link>
 
 
                     {/* VENUE */}
-                    <div className="group p-7 rounded-[18px] border border-[#292230] bg-[#111016] transition-all duration-300 hover:-translate-y-1 hover:border-[#8b5cf6]">
+                    <Link
+                        to={`/events/${eventId}/venue`}
+                        className="group p-7 rounded-[18px] border border-[#292230] bg-[#111016] transition-all duration-300 hover:-translate-y-1 hover:border-[#8b5cf6] no-underline text-white"
+                    >
 
                         <div className="w-12 h-12 flex items-center justify-center rounded-[12px] bg-[#7c3aed]/15 text-2xl mb-5">
                             📍
@@ -177,11 +184,18 @@ style={{ objectPosition: event.position }}
                             guest count and celebration style.
                         </p>
 
-                    </div>
+                        <div className="mt-5 text-[#c084fc] font-semibold">
+                            Explore Venues →
+                        </div>
+
+                    </Link>
 
 
                     {/* SERVICES */}
-                    <div className="group p-7 rounded-[18px] border border-[#292230] bg-[#111016] transition-all duration-300 hover:-translate-y-1 hover:border-[#8b5cf6]">
+                    <Link
+                        to={`/events/${eventId}/services`}
+                        className="group p-7 rounded-[18px] border border-[#292230] bg-[#111016] transition-all duration-300 hover:-translate-y-1 hover:border-[#8b5cf6] no-underline text-white"
+                    >
 
                         <div className="w-12 h-12 flex items-center justify-center rounded-[12px] bg-[#7c3aed]/15 text-2xl mb-5">
                             🍽️
@@ -196,11 +210,18 @@ style={{ objectPosition: event.position }}
                             and other services for your celebration.
                         </p>
 
-                    </div>
+                        <div className="mt-5 text-[#c084fc] font-semibold">
+                            Explore Services →
+                        </div>
+
+                    </Link>
 
 
                     {/* BUDGET */}
-                    <div className="group p-7 rounded-[18px] border border-[#292230] bg-[#111016] transition-all duration-300 hover:-translate-y-1 hover:border-[#8b5cf6]">
+                    <Link
+                        to={`/events/${eventId}/budget`}
+                        className="group p-7 rounded-[18px] border border-[#292230] bg-[#111016] transition-all duration-300 hover:-translate-y-1 hover:border-[#8b5cf6] no-underline text-white"
+                    >
 
                         <div className="w-12 h-12 flex items-center justify-center rounded-[12px] bg-[#7c3aed]/15 text-2xl mb-5">
                             💰
@@ -215,15 +236,20 @@ style={{ objectPosition: event.position }}
                             celebration according to your budget.
                         </p>
 
-                    </div>
+                        <div className="mt-5 text-[#c084fc] font-semibold">
+                            Plan Budget →
+                        </div>
+
+                    </Link>
 
                 </div>
 
 
-                {/* CTA */}
+                {/* BOTTOM CTA */}
                 <div className="mt-12 p-8 md:p-10 rounded-[20px] border border-[#292230] bg-gradient-to-br from-[#17121f] to-[#100c16] flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
 
                     <div>
+
                         <p className="text-[#a855f7] text-xs font-semibold tracking-[2px] mb-2">
                             READY TO START?
                         </p>
@@ -231,6 +257,7 @@ style={{ objectPosition: event.position }}
                         <h3 className="text-2xl md:text-3xl font-bold">
                             Let's plan your {event.title.toLowerCase()}.
                         </h3>
+
                     </div>
 
                     <Link

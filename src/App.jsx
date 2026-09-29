@@ -7,6 +7,8 @@ import Auth from "./pages/Auth";
 import CustomerProfile from "./pages/CustomerProfile";
 import AdminProfile from "./pages/AdminProfile";
 
+import CustomizeEvent from "./pages/CustomizeEvent";
+
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 
 function App() {
@@ -17,7 +19,9 @@ function App() {
         <Route path="/about" element={<About />} />
         <Route path="/services" element={<Services />} />
         <Route path="/events" element={<Events />} />
+
         <Route path="/events/:eventId" element={<EventDetails />} />
+        <Route path="/events/:eventId/customize" element={<CustomizeEvent />} />
         <Route path="/auth" element={<Auth />} />
         <Route path="/customer-profile" element={<CustomerProfile />} />
         <Route path="/admin-profile" element={<AdminProfile />} />

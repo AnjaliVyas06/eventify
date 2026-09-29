@@ -48,9 +48,20 @@ function Auth() {
                 throw new Error(result.message || "Unable to complete authentication");
             }
 
+            const user = result.data?.user;
+            const profileRoute = user?.role === "customer"
+                ? "/customer-profile"
+                : user?.role === "admin"
+                ? "/admin-profile"
+                : null;
+
+            if (!result.data?.token || !user || !profileRoute) {
+                throw new Error("Authentication response did not include a valid account role");
+            }
+
             localStorage.setItem("eventifyToken", result.data.token);
-            localStorage.setItem("eventifyUser", JSON.stringify(result.data.user));
-            navigate("/");
+            localStorage.setItem("eventifyUser", JSON.stringify(user));
+            navigate(profileRoute);
         } catch (error) {
             setStatus({ type: "error", message: error.message });
         } finally {
