@@ -32,21 +32,21 @@ export const api = {
         method: "PATCH",
         body: JSON.stringify({ status }),
     }),
-    createCatalogItem: (type, item) => request(`/api/admin/catalog/${type}`, {
+    createCatalogItem: (type, item) => request(`/api/admin/auth/catalog/${type}`, {
         method: "POST",
         body: JSON.stringify(item),
     }),
-    updateCatalogItem: (type, id, item) => request(`/api/admin/catalog/${type}/${id}`, {
+    updateCatalogItem: (type, id, item) => request(`/api/admin/auth/catalog/${type}/${id}`, {
         method: "PATCH",
         body: JSON.stringify(item),
     }),
-    deactivateCatalogItem: (type, id) => request(`/api/admin/catalog/${type}/${id}`, { method: "DELETE" }),
-    getAdminCatalog: (type) => request(`/api/admin/catalog/${type}`),
-    publishEvent: (id) => request(`/api/admin/catalog/events/${id}/publish`, { method: "PATCH" }),
-    unpublishEvent: (id) => request(`/api/admin/catalog/events/${id}/unpublish`, { method: "PATCH" }),
-    addEventAvailability: (id, slot) => request(`/api/admin/catalog/events/${id}/availability`, {
+    deactivateCatalogItem: (type, id) => request(`/api/admin/auth/catalog/${type}/${id}`, { method: "DELETE" }),
+    getAdminCatalog: (type) => request(`/api/admin/auth/catalog/${type}`),
+    publishEvent: (id) => request(`/api/admin/auth/catalog/events/${id}/publish`, { method: "PATCH" }),
+    unpublishEvent: (id) => request(`/api/admin/auth/catalog/events/${id}/unpublish`, { method: "PATCH" }),
+    addEventAvailability: (id, slot) => request(`/api/admin/auth/catalog/events/${id}/availability`, {
         method: "POST",
         body: JSON.stringify(slot),
     }),
-    removeEventAvailability: (id, availabilityId) => request(`/api/admin/catalog/events/${id}/availability/${availabilityId}`, { method: "DELETE" }),
+    removeEventAvailability: (id, availabilityId) => request(`/api/admin/auth/catalog/events/${id}/availability/${availabilityId}`, { method: "DELETE" }),
 };
