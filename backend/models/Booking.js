@@ -87,6 +87,43 @@ const bookingSchema = new Schema(
                 maxlength: [1000, "Special requirements cannot exceed 1000 characters"],
             },
         },
+        eventPrice: {
+            type: Number,
+            required: true,
+            min: [0, "Event price cannot be negative"],
+        },
+        venuePrice: {
+            type: Number,
+            default: 0,
+            min: [0, "Venue price cannot be negative"],
+        },
+        customizationPrice: {
+            type: Number,
+            default: 0,
+            min: [0, "Customization price cannot be negative"],
+        },
+        totalPrice: {
+            type: Number,
+            required: true,
+            min: [0, "Total price cannot be negative"],
+        },
+        requiresDateApproval: {
+            type: Boolean,
+            default: false,
+        },
+        paymentStatus: {
+            type: String,
+            enum: ["pending", "paid", "failed"],
+            default: "pending",
+            required: true,
+        },
+        paymentReference: {
+            type: String,
+            trim: true,
+        },
+        paidAt: {
+            type: Date,
+        },
         budget: {
             type: Number,
             min: [0, "Budget cannot be negative"],
