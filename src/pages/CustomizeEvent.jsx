@@ -172,7 +172,6 @@ function Customize() {
                             value={form.theme}
                             onChange={updateField}
                             className="w-full bg-[#0d0b12] border border-[#342c3c] rounded-[10px] px-4 py-3 text-white outline-none focus:border-[#7c3aed]"
-                            defaultValue=""
                         >
                             <option value="" disabled>
                                 Select a theme
@@ -218,7 +217,6 @@ function Customize() {
                             value={form.decoration}
                             onChange={updateField}
                             className="w-full bg-[#0d0b12] border border-[#342c3c] rounded-[10px] px-4 py-3 text-white outline-none focus:border-[#7c3aed]"
-                            defaultValue=""
                         >
                             <option value="" disabled>
                                 Select decoration
@@ -263,7 +261,6 @@ function Customize() {
                             value={form.colors}
                             onChange={updateField}
                             className="w-full bg-[#0d0b12] border border-[#342c3c] rounded-[10px] px-4 py-3 text-white outline-none focus:border-[#7c3aed]"
-                            defaultValue=""
                         >
                             <option value="" disabled>
                                 Select colors

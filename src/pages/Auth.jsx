@@ -67,7 +67,6 @@ function Auth() {
 
     const switchMode = () => {
         setIsLogin((currentValue) => !currentValue);
-        setRole("customer");
         setForm({ name: "", email: "", password: "" });
         setStatus({ type: "", message: "" });
     };

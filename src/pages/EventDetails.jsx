@@ -232,7 +232,7 @@ function EventDetails() {
 
                     {/* BUDGET */}
                     <Link
-                        to={`/events/${eventId}/budget`}
+                        to={`/events/${eventId}/customize`}
                         className="group p-7 rounded-[18px] border border-[#292230] bg-[#111016] transition-all duration-300 hover:-translate-y-1 hover:border-[#8b5cf6] no-underline text-white"
                     >
 
@@ -245,12 +245,12 @@ function EventDetails() {
                         </h3>
 
                         <p className="text-[#999] text-sm leading-[1.7]">
-                            Organize your event expenses and plan your
-                            celebration according to your budget.
+                            Configure your event and review the estimated
+                            total for your celebration.
                         </p>
 
                         <div className="mt-5 text-[#c084fc] font-semibold">
-                            Plan Budget →
+                            Review Estimated Total →
                         </div>
 
                     </Link>
