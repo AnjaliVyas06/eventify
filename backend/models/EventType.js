@@ -1,5 +1,47 @@
 import mongoose, { Schema } from "mongoose";
 
+const availabilitySchema = new Schema(
+    {
+        date: {
+            type: Date,
+            required: true,
+        },
+        minGuests: {
+            type: Number,
+            required: true,
+            min: 1,
+        },
+        maxGuests: {
+            type: Number,
+            required: true,
+            min: 1,
+        },
+        minPrice: {
+            type: Number,
+            required: true,
+            min: 0,
+        },
+        maxPrice: {
+            type: Number,
+            required: true,
+            min: 0,
+        },
+        isPublished: {
+            type: Boolean,
+            default: true,
+        },
+        publishedBy: {
+            type: Schema.Types.ObjectId,
+            ref: "User",
+        },
+        adminOwner: {
+            type: Schema.Types.ObjectId,
+            ref: "User",
+        },
+    },
+    { timestamps: true },
+);
+
 const eventTypeSchema = new Schema(
     {
         name: {
@@ -32,6 +74,26 @@ const eventTypeSchema = new Schema(
             type: String,
             trim: true,
             maxlength: [10, "Icon cannot exceed 10 characters"],
+        },
+        customizationPrice: {
+            type: Number,
+            default: 0,
+            min: [0, "Customization price cannot be negative"],
+        },
+        isPublished: {
+            type: Boolean,
+            default: false,
+        },
+        publishedBy: {
+            type: Schema.Types.ObjectId,
+            ref: "User",
+        },
+        publishedAt: {
+            type: Date,
+        },
+        availability: {
+            type: [availabilitySchema],
+            default: [],
         },
         isActive: {
             type: Boolean,
