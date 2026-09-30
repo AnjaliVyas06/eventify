@@ -24,14 +24,10 @@ const getPublicAdmin = (admin) => ({
 });
 
 const registerAdmin = asyncHandler(async (req, res) => {
-    const { name, email, password, signupKey } = req.body;
+    const { name, email, password } = req.body;
 
     if ([name, email, password].some((field) => !field?.trim())) {
         throw new ApiError(400, "Name, email, and password are required");
-    }
-
-    if (!process.env.ADMIN_SIGNUP_KEY || signupKey !== process.env.ADMIN_SIGNUP_KEY) {
-        throw new ApiError(403, "A valid admin signup key is required");
     }
 
     if (password.length < 8) {
