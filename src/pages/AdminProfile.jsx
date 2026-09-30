@@ -1,6 +1,22 @@
-import { Link } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { api } from "../lib/api";
 
 function AdminProfile() {
+    const navigate = useNavigate();
+    const [user] = useState(() => JSON.parse(localStorage.getItem("eventifyUser") || "null"));
+    const [bookingCount, setBookingCount] = useState(0);
+
+    useEffect(() => {
+        api.getAdminBookings().then(({ bookings }) => setBookingCount(bookings.length)).catch(() => {});
+    }, []);
+
+    const logout = () => {
+        localStorage.removeItem("eventifyToken");
+        localStorage.removeItem("eventifyUser");
+        navigate("/");
+    };
+
     return (
         <div className="min-h-screen bg-[#09070d] text-white">
 
@@ -24,7 +40,7 @@ function AdminProfile() {
                         </Link>
 
                         <div className="w-11 h-11 rounded-full bg-[#7c3aed] flex items-center justify-center text-lg font-bold">
-                            A
+                            {user?.name?.charAt(0).toUpperCase() || "A"}
                         </div>
                     </div>
 
@@ -67,11 +83,11 @@ function AdminProfile() {
                         <div className="text-center">
 
                             <h2 className="text-xl font-bold">
-                                Admin Name
+                                {user?.name || "Admin"}
                             </h2>
 
                             <p className="text-[#888] text-sm mt-1">
-                                admin@eventify.com
+                                {user?.email || ""}
                             </p>
 
                             <div className="inline-flex mt-4 px-4 py-2 rounded-full bg-[#7c3aed]/15 border border-[#7c3aed]/30 text-[#c084fc] text-sm font-semibold">
@@ -112,12 +128,12 @@ function AdminProfile() {
                                 Manage Services
                             </button>
 
-                            <button
-                                type="button"
-                                className="w-full text-left px-4 py-3 rounded-[10px] text-[#aaa] hover:bg-[#1a1620] hover:text-white text-sm transition"
+                            <Link
+                                to="/admin/bookings"
+                                className="block w-full rounded-[10px] px-4 py-3 text-left text-sm text-[#aaa] no-underline transition hover:bg-[#1a1620] hover:text-white"
                             >
                                 Bookings
-                            </button>
+                            </Link>
 
                         </div>
 
@@ -143,7 +159,7 @@ function AdminProfile() {
                                     </p>
 
                                     <p className="text-white">
-                                        Admin Name
+                                        {user?.name || "Admin"}
                                     </p>
                                 </div>
 
@@ -154,7 +170,7 @@ function AdminProfile() {
                                     </p>
 
                                     <p className="text-white">
-                                        admin@eventify.com
+                                        {user?.email || ""}
                                     </p>
                                 </div>
 
@@ -176,7 +192,7 @@ function AdminProfile() {
                                     </p>
 
                                     <p className="text-white">
-                                        2026
+                                        {user?.createdAt ? new Date(user.createdAt).getFullYear() : "-"}
                                     </p>
                                 </div>
 
@@ -195,6 +211,10 @@ function AdminProfile() {
                             <h2 className="text-xl font-bold mb-6">
                                 Manage Your Platform
                             </h2>
+
+                            <Link to="/admin/catalog" className="mb-5 inline-block text-sm text-[#c084fc] no-underline hover:text-white">
+                                Open catalog manager →
+                            </Link>
 
 
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -318,7 +338,7 @@ function AdminProfile() {
                                 </p>
 
                                 <p className="text-2xl font-bold">
-                                    36
+                                    {bookingCount}
                                 </p>
                             </div>
 
@@ -328,12 +348,13 @@ function AdminProfile() {
                         {/* LOGOUT */}
                         <div className="flex justify-end pt-2">
 
-                            <Link
-                                to="/"
+                            <button
+                                type="button"
+                                onClick={logout}
                                 className="px-5 py-3 rounded-[10px] border border-[#3a303f] text-[#aaa] no-underline text-sm font-semibold hover:border-red-500 hover:text-red-400 transition"
                             >
                                 Logout
-                            </Link>
+                            </button>
 
                         </div>
 

@@ -1,4 +1,6 @@
+import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
+import { api } from "../lib/api";
 
 import wedding from "../assets/wedding-eve.jpg";
 import birthday from "../assets/birthday-eve.jpg";
@@ -7,6 +9,7 @@ import house from "../assets/house-eve.jpg";
 
 function EventDetails() {
     const { eventId } = useParams();
+    const [isVerified, setIsVerified] = useState(null);
 
     const events = {
         wedding: {
@@ -45,7 +48,17 @@ function EventDetails() {
 
     const event = events[eventId];
 
-    if (!event) {
+    useEffect(() => {
+        api.getEvents()
+            .then(({ events: records }) => setIsVerified(records.some((record) => record.slug === eventId)))
+            .catch(() => setIsVerified(false));
+    }, [eventId]);
+
+    if (isVerified === null) {
+        return <div className="flex min-h-screen items-center justify-center bg-[#09070d] text-[#c084fc]">Loading verified event...</div>;
+    }
+
+    if (!event || !isVerified) {
         return (
             <div className="min-h-screen bg-[#09070d] text-white flex items-center justify-center px-5">
                 <div className="text-center">
@@ -166,7 +179,7 @@ function EventDetails() {
 
 
                     {/* VENUE */}
-                    <Link
+                    {eventId !== "housewarming" && <Link
                         to={`/events/${eventId}/venue`}
                         className="group p-7 rounded-[18px] border border-[#292230] bg-[#111016] transition-all duration-300 hover:-translate-y-1 hover:border-[#8b5cf6] no-underline text-white"
                     >
@@ -188,7 +201,7 @@ function EventDetails() {
                             Explore Venues →
                         </div>
 
-                    </Link>
+                    </Link>}
 
 
                     {/* SERVICES */}

@@ -1,7 +1,9 @@
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { api } from "../lib/api";
 
 function Services() {
-    const services = [
+    const fallbackServices = [
         {
             icon: "🎨",
             title: "Event Customization",
@@ -39,6 +41,13 @@ function Services() {
                 "Organize your event expenses and make planning easier while keeping your budget in mind."
         }
     ];
+    const [services, setServices] = useState(fallbackServices);
+
+    useEffect(() => {
+        api.getServices().then(({ services: records }) => {
+            if (records.length) setServices(records);
+        }).catch(() => {});
+    }, []);
 
     return (
         <div className="min-h-screen bg-[#09070d] text-white pb-[70px]">
@@ -108,7 +117,7 @@ function Services() {
                             </p>
 
                             <Link
-                                to="/events"
+                                to="/events/wedding/services"
                                 className="inline-flex items-center gap-[9px] text-[#a855f7] no-underline text-sm font-semibold transition-all duration-300 hover:text-[#c084fc] hover:translate-x-1"
                             >
                                 Explore

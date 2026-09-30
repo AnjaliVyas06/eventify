@@ -1,10 +1,100 @@
-import { Link, useParams } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { Link, useNavigate, useParams } from "react-router-dom";
+import { api } from "../lib/api";
 
 function Customize() {
     const { eventId } = useParams();
+    const navigate = useNavigate();
+    const [form, setForm] = useState({ theme: "", decoration: "", colors: "", guestCount: "", eventDate: "", venue: "", services: [] });
+    const [dateChoice, setDateChoice] = useState("custom");
+    const [availableDates, setAvailableDates] = useState([]);
+    const [venues, setVenues] = useState([]);
+    const [services, setServices] = useState([]);
+    const [eventPrice, setEventPrice] = useState(0);
+    const [status, setStatus] = useState("");
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
     const eventName =
         eventId?.charAt(0).toUpperCase() + eventId?.slice(1);
+    const isHousewarming = eventId === "housewarming";
+
+    useEffect(() => {
+        Promise.all([api.getVenues(), api.getServices(), api.getEvents()])
+            .then(([venueData, serviceData, eventData]) => {
+                setVenues(isHousewarming ? [] : venueData.venues);
+                setServices(serviceData.services);
+                const selectedEvent = eventData.events.find((item) => item.slug === eventId);
+                const publishedDates = selectedEvent?.availability?.filter((slot) => slot.isPublished) || [];
+                setEventPrice(selectedEvent?.customizationPrice || 0);
+                setAvailableDates(publishedDates);
+                if (publishedDates.length) {
+                    const firstDate = new Date(publishedDates[0].date).toISOString().slice(0, 10);
+                    setDateChoice(firstDate);
+                    setForm((current) => ({ ...current, eventDate: firstDate }));
+                }
+            })
+            .catch((error) => setStatus(error.message));
+    }, [eventId, isHousewarming]);
+
+    const updateField = (event) => {
+        setForm((current) => ({ ...current, [event.target.name]: event.target.value }));
+    };
+
+    const selectDate = (event) => {
+        const choice = event.target.value;
+        setDateChoice(choice);
+        setForm((current) => ({ ...current, eventDate: choice === "custom" ? "" : choice }));
+    };
+
+    const toggleService = (serviceId) => {
+        setForm((current) => ({
+            ...current,
+            services: current.services.includes(serviceId)
+                ? current.services.filter((id) => id !== serviceId)
+                : [...current.services, serviceId],
+        }));
+    };
+
+    const createDraft = async (event) => {
+        event.preventDefault();
+        setStatus("");
+        setIsSubmitting(true);
+
+        try {
+            if (!localStorage.getItem("eventifyToken")) {
+                navigate("/auth");
+                return;
+            }
+
+            const { events } = await api.getEvents();
+            const selectedEvent = events.find((item) => item.slug === eventId);
+            if (!selectedEvent) throw new Error("This event type is not available yet");
+
+            const { booking } = await api.createBooking({
+                eventType: selectedEvent._id,
+                eventDate: form.eventDate,
+                guestCount: Number(form.guestCount),
+                venue: isHousewarming ? undefined : form.venue || undefined,
+                selectedServices: form.services.map((service) => ({ service, quantity: 1 })),
+                customization: {
+                    theme: form.theme,
+                    colors: form.colors ? [form.colors] : [],
+                    specialRequirements: form.decoration,
+                },
+            });
+            navigate(`/payment/${booking._id}`);
+        } catch (error) {
+            setStatus(error.message);
+        } finally {
+            setIsSubmitting(false);
+        }
+    };
+
+    const selectedVenue = venues.find((venue) => venue._id === form.venue);
+    const selectedServicesPrice = services
+        .filter((service) => form.services.includes(service._id))
+        .reduce((total, service) => total + (service.priceFrom || 0), 0);
+    const estimatedTotal = eventPrice + (selectedVenue?.priceFrom || 0) + selectedServicesPrice;
 
     return (
         <div className="min-h-screen bg-[#09070d] text-white">
@@ -78,6 +168,9 @@ function Customize() {
                         </p>
 
                         <select
+                            name="theme"
+                            value={form.theme}
+                            onChange={updateField}
                             className="w-full bg-[#0d0b12] border border-[#342c3c] rounded-[10px] px-4 py-3 text-white outline-none focus:border-[#7c3aed]"
                             defaultValue=""
                         >
@@ -121,6 +214,9 @@ function Customize() {
                         </p>
 
                         <select
+                            name="decoration"
+                            value={form.decoration}
+                            onChange={updateField}
                             className="w-full bg-[#0d0b12] border border-[#342c3c] rounded-[10px] px-4 py-3 text-white outline-none focus:border-[#7c3aed]"
                             defaultValue=""
                         >
@@ -163,6 +259,9 @@ function Customize() {
                         </p>
 
                         <select
+                            name="colors"
+                            value={form.colors}
+                            onChange={updateField}
                             className="w-full bg-[#0d0b12] border border-[#342c3c] rounded-[10px] px-4 py-3 text-white outline-none focus:border-[#7c3aed]"
                             defaultValue=""
                         >
@@ -206,19 +305,70 @@ function Customize() {
                         </p>
 
                         <input
+                            name="guestCount"
+                            value={form.guestCount}
+                            onChange={updateField}
                             type="number"
                             min="1"
                             placeholder="Enter number of guests"
                             className="w-full bg-[#0d0b12] border border-[#342c3c] rounded-[10px] px-4 py-3 text-white outline-none focus:border-[#7c3aed]"
                         />
 
+                        <label className="mt-5 block text-sm text-[#aaa]">
+                            Published event dates
+                            <select value={dateChoice} onChange={selectDate} className="mt-2 w-full rounded-[10px] border border-[#342c3c] bg-[#0d0b12] px-4 py-3 text-white outline-none focus:border-[#7c3aed]">
+                                {availableDates.map((slot) => {
+                                    const date = new Date(slot.date).toISOString().slice(0, 10);
+                                    return <option key={slot._id} value={date}>{date} · {slot.minGuests}-{slot.maxGuests} guests · {slot.minPrice}-{slot.maxPrice}</option>;
+                                })}
+                                <option value="custom">Custom date (requires admin approval)</option>
+                            </select>
+                        </label>
+
+                        {dateChoice === "custom" && <label className="mt-5 block text-sm text-[#aaa]">
+                            Custom event date
+                            <input
+                                name="eventDate"
+                                type="date"
+                                value={form.eventDate}
+                                onChange={updateField}
+                                min={new Date().toISOString().slice(0, 10)}
+                                required
+                                className="mt-2 w-full rounded-[10px] border border-[#342c3c] bg-[#0d0b12] px-4 py-3 text-white outline-none focus:border-[#7c3aed]"
+                            />
+                            <span className="mt-2 block text-xs text-[#c084fc]">This booking will remain pending until an admin approves the date.</span>
+                        </label>}
+
                     </div>
 
                 </div>
 
+                <div className="mt-6 grid grid-cols-1 gap-6 md:grid-cols-2">
+                    {!isHousewarming && <div className="rounded-[20px] border border-[#292230] bg-[#111016] p-7">
+                        <h2 className="mb-3 text-xl font-bold">Choose a Venue</h2>
+                        <p className="mb-5 text-sm text-[#999]">Select a venue that can accommodate your guests.</p>
+                        <select name="venue" value={form.venue} onChange={updateField} className="w-full rounded-[10px] border border-[#342c3c] bg-[#0d0b12] px-4 py-3 text-white outline-none focus:border-[#7c3aed]">
+                            <option value="">Select a venue</option>
+                            {venues.map((venue) => <option key={venue._id} value={venue._id}>{venue.name} ({venue.capacity} guests)</option>)}
+                        </select>
+                    </div>}
+
+                    <div className="rounded-[20px] border border-[#292230] bg-[#111016] p-7">
+                        <h2 className="mb-3 text-xl font-bold">Choose Services</h2>
+                        <p className="mb-5 text-sm text-[#999]">Add the services you need for your celebration.</p>
+                        <div className="space-y-3">
+                            {services.length === 0 && <p className="text-sm text-[#999]">No services are available yet.</p>}
+                            {services.map((service) => <label key={service._id} className="flex items-center gap-3 text-sm text-[#ddd]">
+                                <input type="checkbox" checked={form.services.includes(service._id)} onChange={() => toggleService(service._id)} className="h-4 w-4 accent-[#7c3aed]" />
+                                <span>{service.name}{service.priceFrom !== undefined ? ` (from ${service.priceFrom})` : ""}</span>
+                            </label>)}
+                        </div>
+                    </div>
+                </div>
+
 
                 {/* BOTTOM ACTION */}
-                <div className="mt-10 p-7 md:p-8 rounded-[20px] border border-[#292230] bg-gradient-to-br from-[#17121f] to-[#100c16] flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+                <form onSubmit={createDraft} className="mt-10 p-7 md:p-8 rounded-[20px] border border-[#292230] bg-gradient-to-br from-[#17121f] to-[#100c16] flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
 
                     <div>
 
@@ -233,18 +383,22 @@ function Customize() {
                         <p className="text-[#999] mt-2">
                             Continue planning your {eventName} event.
                         </p>
+                        <p className="mt-4 text-sm text-[#c084fc]">
+                            Estimated total: {estimatedTotal} (event {eventPrice} + venue {selectedVenue?.priceFrom || 0} + services {selectedServicesPrice})
+                        </p>
 
                     </div>
 
-                    <Link
-                        to={`/events/${eventId}/venue`}
-                        className="inline-flex items-center gap-2 px-6 py-3 rounded-[10px] bg-[#7c3aed] text-white no-underline font-semibold hover:bg-[#8b5cf6] transition"
-                    >
-                        Find a Venue
-                        <span>→</span>
-                    </Link>
+                    <div className="flex flex-col items-start gap-3">
+                        {status && <p className="text-sm text-red-300">{status}</p>}
+                        <button type="submit" disabled={isSubmitting} className="inline-flex items-center gap-2 rounded-[10px] bg-[#7c3aed] px-6 py-3 font-semibold text-white transition hover:bg-[#8b5cf6] disabled:opacity-50">
+                            {isSubmitting ? "Saving..." : "Save & continue"}
+                            <span>→</span>
+                        </button>
+                        <Link to={`/events/${eventId}/venue`} className="text-sm text-[#c084fc]">Browse venues first</Link>
+                    </div>
 
-                </div>
+                </form>
 
             </main>
 

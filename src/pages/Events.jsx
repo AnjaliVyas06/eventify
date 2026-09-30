@@ -1,12 +1,13 @@
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { api } from "../lib/api";
 
 import wedding from "../assets/wedding.jpg";
 import birthday from "../assets/birthday.jpg";
 import eng from "../assets/eng.jpg";
 import house from "../assets/house.jpg";
 
-function Events() {
-    const events = [
+const fallbackEvents = [
         {
             id: "wedding",
             title: "Wedding",
@@ -39,7 +40,25 @@ function Events() {
             image: house,
             icon: "🏠",
         },
-    ];
+];
+
+function Events() {
+    const [events, setEvents] = useState([]);
+    const [status, setStatus] = useState("Loading verified events...");
+
+    useEffect(() => {
+        api.getEvents().then(({ events: records }) => {
+            setEvents(records.map((record) => ({
+                    id: record.slug,
+                    title: record.name,
+                    description: record.description,
+                    image: fallbackEvents.find((event) => event.id === record.slug)?.image,
+                    icon: record.icon || fallbackEvents.find((event) => event.id === record.slug)?.icon || "✦",
+                    customizationPrice: record.customizationPrice || 0,
+                })));
+            setStatus(records.length ? "" : "No verified events are available yet.");
+        }).catch((error) => setStatus(error.message));
+    }, []);
 
     return (
         <div className="min-h-screen bg-[#09070d] text-white pb-[70px]">
@@ -78,6 +97,7 @@ function Events() {
 
 
                 {/* EVENT GRID */}
+                {status && <p className="mb-8 text-[#c084fc]">{status}</p>}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-7">
 
                     {events.map((event) => (
@@ -112,6 +132,10 @@ function Events() {
 
                                 <p className="text-[#999] leading-[1.7] text-sm mb-[25px]">
                                     {event.description}
+                                </p>
+
+                                <p className="mb-5 text-sm text-[#c084fc]">
+                                    Customization from {event.customizationPrice}
                                 </p>
 
                                 <Link

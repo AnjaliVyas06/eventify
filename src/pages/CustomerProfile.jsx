@@ -1,6 +1,22 @@
-import { Link } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { api } from "../lib/api";
 
 function Profile() {
+    const navigate = useNavigate();
+    const [user] = useState(() => JSON.parse(localStorage.getItem("eventifyUser") || "null"));
+    const [bookingCount, setBookingCount] = useState(0);
+
+    useEffect(() => {
+        api.getBookings().then(({ bookings }) => setBookingCount(bookings.length)).catch(() => {});
+    }, []);
+
+    const logout = () => {
+        localStorage.removeItem("eventifyToken");
+        localStorage.removeItem("eventifyUser");
+        navigate("/");
+    };
+
     return (
         <div className="min-h-screen bg-[#09070d] text-white">
 
@@ -55,17 +71,17 @@ function Profile() {
 
                         {/* AVATAR */}
                         <div className="w-24 h-24 rounded-full bg-[#7c3aed] flex items-center justify-center text-4xl font-bold mx-auto mb-5">
-                            A
+                            {user?.name?.charAt(0).toUpperCase() || "U"}
                         </div>
 
                         <div className="text-center">
 
                             <h2 className="text-xl font-bold">
-                                Customer Name
+                                {user?.name || "Customer"}
                             </h2>
 
                             <p className="text-[#888] text-sm mt-1">
-                                customer@example.com
+                                {user?.email || ""}
                             </p>
 
                         </div>
@@ -111,7 +127,7 @@ function Profile() {
                                     </p>
 
                                     <p className="text-white">
-                                        Customer Name
+                                        {user?.name || "Customer"}
                                     </p>
                                 </div>
 
@@ -121,7 +137,7 @@ function Profile() {
                                     </p>
 
                                     <p className="text-white">
-                                        customer@example.com
+                                        {user?.email || ""}
                                     </p>
                                 </div>
 
@@ -141,7 +157,7 @@ function Profile() {
                                     </p>
 
                                     <p className="text-white">
-                                        2026
+                                        {user?.createdAt ? new Date(user.createdAt).getFullYear() : "-"}
                                     </p>
                                 </div>
 
@@ -175,7 +191,7 @@ function Profile() {
                                     to="/my-bookings"
                                     className="inline-flex items-center justify-center px-4 py-2 rounded-[9px] border border-[#7c3aed] text-white no-underline text-sm font-semibold hover:bg-[#7c3aed] transition"
                                 >
-                                    View Bookings
+                                        View {bookingCount} Bookings
                                 </Link>
 
                             </div>
@@ -186,12 +202,13 @@ function Profile() {
                         {/* LOGOUT */}
                         <div className="flex justify-end">
 
-                            <Link
-                                to="/"
+                            <button
+                                type="button"
+                                onClick={logout}
                                 className="px-5 py-3 rounded-[10px] border border-[#3a303f] text-[#aaa] no-underline text-sm font-semibold hover:border-red-500 hover:text-red-400 transition"
                             >
                                 Logout
-                            </Link>
+                            </button>
 
                         </div>
 

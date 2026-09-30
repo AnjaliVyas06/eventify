@@ -11,7 +11,6 @@ function Auth() {
         name: "",
         email: "",
         password: "",
-        signupKey: "",
     });
     const [status, setStatus] = useState({ type: "", message: "" });
     const [isSubmitting, setIsSubmitting] = useState(false);
@@ -37,9 +36,6 @@ function Auth() {
                     name: form.name,
                     email: form.email,
                     password: form.password,
-                    ...(role === "admin" && !isLogin
-                        ? { signupKey: form.signupKey }
-                        : {}),
                 }),
             });
             const result = await response.json();
@@ -72,7 +68,7 @@ function Auth() {
     const switchMode = () => {
         setIsLogin((currentValue) => !currentValue);
         setRole("customer");
-        setForm({ name: "", email: "", password: "", signupKey: "" });
+        setForm({ name: "", email: "", password: "" });
         setStatus({ type: "", message: "" });
     };
 
@@ -169,25 +165,6 @@ function Auth() {
                                 />
                             </div>
                         )}
-
-                        {!isLogin && role === "admin" && (
-                            <div>
-                                <label className="block text-sm font-medium text-[#ddd] mb-2">
-                                    Admin Signup Key
-                                </label>
-
-                                <input
-                                    name="signupKey"
-                                    type="password"
-                                    placeholder="Enter the admin signup key"
-                                    value={form.signupKey}
-                                    onChange={updateField}
-                                    required
-                                    className="w-full px-4 py-3 rounded-[10px] bg-[#0b0910] border border-[#292230] text-white placeholder-[#666] outline-none transition-all duration-300 focus:border-[#7c3aed] focus:ring-1 focus:ring-[#7c3aed]"
-                                />
-                            </div>
-                        )}
-
 
                         {/* EMAIL */}
                         <div>
