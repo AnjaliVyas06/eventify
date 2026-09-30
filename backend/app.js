@@ -4,6 +4,8 @@ import ApiError from "./utils/ApiError.js";
 import errorHandler from "./middleware/errorHandler.js";
 import authRoutes from "./routes/authRoutes.js";
 import adminRoutes from "./routes/adminRoutes.js";
+import catalogRoutes from "./routes/catalogRoutes.js";
+import bookingRoutes from "./routes/bookingRoutes.js";
 
 const app = express();
 
@@ -24,6 +26,8 @@ app.get("/api/health", (_req, res) => {
 // Mount the auth routes example http://localhost:5000/api/auth/signup
 app.use("/api/auth", authRoutes);
 app.use("/api/admin/auth", adminRoutes);
+app.use("/api/catalog", catalogRoutes);
+app.use("/api/bookings", bookingRoutes);
 
 app.use((_req, _res, next) => {
     next(new ApiError(404, "Route not found"));
