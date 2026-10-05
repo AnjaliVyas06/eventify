@@ -1,3 +1,5 @@
+import { clearSession } from "./authSession";
+
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
 
 const request = async (path, options = {}) => {
@@ -11,6 +13,10 @@ const request = async (path, options = {}) => {
         },
     });
     const result = await response.json();
+    if (response.status === 401 && token) {
+        clearSession();
+        window.location.assign("/auth");
+    }
     if (!response.ok) throw new Error(result.message || "Request failed");
     return result.data;
 };
